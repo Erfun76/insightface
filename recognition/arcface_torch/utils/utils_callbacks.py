@@ -56,14 +56,17 @@ class CallBackVerification(object):
             backbone.train()
 
 
-class CallBackLogging(object):
-    def __init__(self, frequent, total_step, batch_size, writer=None):
+class CallBackLoggingResume(object):
+    def __init__(self, frequent, rank, total_step, start_step, batch_size, world_size, writer=None):
         self.frequent: int = frequent
         self.rank: int = distributed.get_rank()
         self.world_size: int = distributed.get_world_size()
         self.time_start = time.time()
+         # added
+        self.start_step: int = start_step
         self.total_step: int = total_step
         self.batch_size: int = batch_size
+        self.world_size: int = world_size
         self.writer = writer
 
         self.init = False
@@ -85,7 +88,7 @@ class CallBackLogging(object):
                     speed_total = float('inf')
 
                 time_now = (time.time() - self.time_start) / 3600
-                time_total = time_now / ((global_step + 1) / self.total_step)
+                time_total = time_now / ((global_step-self.start_step + 1) / self.total_step)
                 time_for_end = time_total - time_now
                 if self.writer is not None:
                     self.writer.add_scalar('time_for_end', time_for_end, global_step)
@@ -108,3 +111,22 @@ class CallBackLogging(object):
             else:
                 self.init = True
                 self.tic = time.time()
+
+
+class CallBackModelCheckpointResume(object):
+    def __init__(self, rank, output="./"):
+        self.rank: int = rank
+        self.output: str = output
+
+    def __call__(self, global_step, epoch, backbone, partial_fc, optimizer, scheduler):
+        if global_step > 10 and self.rank == 0:
+            path_module = os.path.join(self.output, "savedckpt.pth")
+            # changed
+            state = {'epoch': epoch, 'backbone': backbone, 'optimizer': optimizer.state_dict(), 'scheduler': scheduler.state_dict()}
+            torch.save(state, path_module)
+            logging.info("Pytorch Model Saved in '{}'".format(path_module))
+
+        if global_step > 10 and partial_fc is not None:
+            path_pfc = os.path.join(self.output, "softmax_fc_gpu_{}.pt".format(self.rank))
+            torch.save(partial_fc.state_dict(), path_pfc)
+            # partial_fc.save_params()

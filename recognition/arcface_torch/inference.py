@@ -3,6 +3,8 @@ import argparse
 import cv2
 import numpy as np
 import torch
+from numpy.linalg import norm as l2norm
+from sklearn import preprocessing
 
 from backbones import get_model
 
@@ -23,13 +25,18 @@ def inference(weight, name, img):
     net.load_state_dict(torch.load(weight))
     net.eval()
     feat = net(img).numpy()
-    print(feat)
+
+    return feat
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='PyTorch ArcFace Training')
     parser.add_argument('--network', type=str, default='r50', help='backbone network')
     parser.add_argument('--weight', type=str, default='')
-    parser.add_argument('--img', type=str, default=None)
+
     args = parser.parse_args()
-    inference(args.weight, args.network, args.img)
+    feat1 = inference(args.weight, args.network, 'data/bato_data/hayayi2.jpg')
+    feat2 = inference(args.weight, args.network, 'data/bato_data/hayayi4.jpg')
+    norm_feat1 = feat1[0]/l2norm(feat1[0])
+    norm_feat2 = feat2[0]/l2norm(feat2[0])
+    print(np.dot(norm_feat1,norm_feat2))

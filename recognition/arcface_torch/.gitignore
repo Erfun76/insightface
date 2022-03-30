@@ -3,3 +3,6 @@
 bak*/
 work_dirs/
 models/
+data/
+results/
+backbone.pth

@@ -140,7 +140,7 @@ def main(args):
     #     writer=summary_writer
     # )
     # changed
-    callback_logging = CallBackLoggingResume(cfg.frequent, rank, cfg.total_step, global_step, cfg.batch_size, world_size, None)
+    callback_logging = CallBackLoggingResume(cfg.frequent, rank, cfg.total_step, global_step, cfg.batch_size, world_size, summary_writer)
     callback_checkpoint = CallBackModelCheckpointResume(rank, cfg.output)
 
     loss_am = AverageMeter()
@@ -174,7 +174,7 @@ def main(args):
                 callback_logging(global_step, loss_am, epoch, cfg.fp16, lr_scheduler.get_last_lr()[0], amp)
 
 
-                if global_step % cfg.verbose == 0 and global_step > 200:
+                if global_step % cfg.verbose == 0 and global_step > 5:
                     callback_verification(global_step, backbone)
         
         if epoch % cfg.frequent == 0:

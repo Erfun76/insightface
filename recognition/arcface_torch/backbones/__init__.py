@@ -1,5 +1,7 @@
 from .iresnet import iresnet18, iresnet34, iresnet50, iresnet100, iresnet200
 from .mobilefacenet import get_mbf
+from .efficientnet import efficientnet
+from .ghostnet import GhostNet
 
 
 def get_model(name, **kwargs):
@@ -21,5 +23,9 @@ def get_model(name, **kwargs):
         fp16 = kwargs.get("fp16", False)
         num_features = kwargs.get("num_features", 512)
         return get_mbf(fp16=fp16, num_features=num_features)
+    elif name == "efficientnet":
+        return  efficientnet([112,112])
+    elif name == "ghostnet":
+        return GhostNet([112,112])
     else:
         raise ValueError()

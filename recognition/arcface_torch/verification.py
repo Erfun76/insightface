@@ -155,6 +155,7 @@ def calculate_val(thresholds,
 
         val[fold_idx], far[fold_idx] = calculate_val_far(
             threshold, dist[test_set], actual_issame[test_set])
+        
 
     val_mean = np.mean(val)
     far_mean = np.mean(far)

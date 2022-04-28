@@ -1,11 +1,14 @@
 import argparse
 import logging
 import os
+# from turtle import back
 
 import torch
 from torch import distributed
 from torch.utils.tensorboard import SummaryWriter
 
+from torchsummary import summary
+from torch import nn
 from backbones import get_model
 from dataset import get_dataloader
 from torch.utils.data import DataLoader
@@ -53,9 +56,12 @@ def main(args):
     else:
         raise
 
-    backbone = get_model(
-        cfg.network, dropout=0.0, fp16=cfg.fp16, num_features=cfg.embedding_size
-    ).cuda()
+    # backbone = get_model(
+    #     cfg.network, dropout=0.0, fp16=cfg.fp16, num_features=cfg.embedding_size
+    # ).cuda()
+    # backbone._fc =  nn.Sequential(nn.Linear(1280, 512), nn.BatchNorm1d(512, eps=1e-05))
+
+    # summary(backbone, (3,112,112))
 
     module_partial_fc = PartialFC(
         margin_loss,

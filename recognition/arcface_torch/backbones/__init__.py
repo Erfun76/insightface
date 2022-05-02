@@ -2,6 +2,7 @@ from .iresnet import iresnet18, iresnet34, iresnet50, iresnet100, iresnet200
 from .mobilefacenet import get_mbf
 from .efficientnet import efficientnet
 from .ghostnet import GhostNet
+from .resnet_irse import IR_100
 
 
 def get_model(name, **kwargs):
@@ -27,5 +28,7 @@ def get_model(name, **kwargs):
         return  efficientnet([112,112])
     elif name == "ghostnet":
         return GhostNet([112,112])
+    elif name == "IR100":
+    	return IR_100([112,112])
     else:
         raise ValueError()

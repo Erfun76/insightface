@@ -56,9 +56,9 @@ def main(args):
     else:
         raise
 
-    # backbone = get_model(
-    #     cfg.network, dropout=0.0, fp16=cfg.fp16, num_features=cfg.embedding_size
-    # ).cuda()
+    backbone = get_model(
+        cfg.network, dropout=0.0, fp16=cfg.fp16, num_features=cfg.embedding_size
+    ).cuda()
     # backbone._fc =  nn.Sequential(nn.Linear(1280, 512), nn.BatchNorm1d(512, eps=1e-05))
 
     # summary(backbone, (3,112,112))

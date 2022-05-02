@@ -7,7 +7,7 @@ import torch
 from torch import distributed
 from torch.utils.tensorboard import SummaryWriter
 
-from torchsummary import summary
+# from torchsummary import summary
 from torch import nn
 from backbones import get_model
 from dataset import get_dataloader

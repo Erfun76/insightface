@@ -12,9 +12,7 @@ from torch.nn import (
 )
 from collections import namedtuple
 from .common import Flatten, bottleneck_IR, bottleneck_IR_SE
-from config import configurations
 
-cfg = configurations[1]
 
 
 class Bottleneck(namedtuple("Block", ["in_channel", "depth", "stride"])):
@@ -138,14 +136,14 @@ class Backbone(Module):
         self._initialize_weights()
 
     def forward(self, x):
-        with torch.cuda.amp.autocast(cfg["ENABLE_AMP"]):
+        with torch.cuda.amp.autocast(False):
             x = self.input_layer(x)
             x = self.body(x)
             # x = self.output_layer(x)
             x = self.bn2(x)
             x = torch.flatten(x, 1)
             x = self.dropout(x)
-        x = self.fc(x.float() if cfg["ENABLE_AMP"] else x)
+        x = self.fc(x.float() if False else x)
         x = self.features(x)
 
         return x

@@ -77,7 +77,8 @@ def main(args):
     start_epoch = 0
     global_step = 0
     # changed
-    backbone.load_state_dict(torch.load("results/backbone_r100.pth", map_location=torch.device(args.local_rank)))
+    if args.pretrain:
+            backbone.load_state_dict(torch.load("results/backbone_r100.pth", map_location=torch.device(args.local_rank)))
 
     if cfg.resume:
         # try:   
@@ -209,4 +210,5 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Distributed Arcface Training in Pytorch")
     parser.add_argument("config", type=str, help="py config file")
     parser.add_argument("--local_rank", type=int, default=0, help="local_rank")
+    parser.add_argument("--pretrain", type=bool, default=False)
     main(parser.parse_args())

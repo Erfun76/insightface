@@ -24,11 +24,11 @@ class CallBackVerification(object):
 
         self.summary_writer = summary_writer
 
-    def ver_test(self, backbone: torch.nn.Module, global_step: int):
+    def ver_test(self, backbone: torch.nn.Module, global_step: int, path_module: str):
         results = []
         for i in range(len(self.ver_list)):
             acc1, std1, acc2, std2, xnorm, embeddings_list = verification.test(
-                self.ver_list[i], backbone, 10, 10)
+                self.ver_list[i], backbone, 4, 10)
             logging.info('[%s][%d]XNorm: %f' % (self.ver_name_list[i], global_step, xnorm))
             logging.info('[%s][%d]Accuracy-Flip: %1.5f+-%1.5f' % (self.ver_name_list[i], global_step, acc2, std2))
 
@@ -37,6 +37,7 @@ class CallBackVerification(object):
 
             if acc2 > self.highest_acc_list[i]:
                 self.highest_acc_list[i] = acc2
+                torch.save(backbone.module.state_dict(), path_module)
             logging.info(
                 '[%s][%d]Accuracy-Highest: %1.5f' % (self.ver_name_list[i], global_step, self.highest_acc_list[i]))
             results.append(acc2)

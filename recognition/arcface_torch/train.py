@@ -77,6 +77,8 @@ def main(args):
     start_epoch = 0
     global_step = 0
     # changed
+    backbone.load_state_dict(torch.load("results/backbone_r100.pth", map_location=torch.device(args.local_rank)))
+
     if cfg.resume:
         # try:   
             backbone_pth = os.path.join(cfg.output, "savedckpt.pth")
@@ -181,8 +183,9 @@ def main(args):
 
 
                 if global_step % cfg.verbose == 0 and global_step > 5:
-                    callback_verification(global_step, backbone)
-        
+                    path_module = os.path.join(cfg.output, "best_model.pt")
+                    callback_verification(global_step, backbone, path_module)
+
         if epoch % cfg.frequent == 0:
             callback_checkpoint(global_step, epoch, backbone, module_partial_fc, opt, lr_scheduler)
 

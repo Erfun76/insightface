@@ -410,7 +410,7 @@ if __name__ == '__main__':
     ).cuda()
     weight = args.model
     model.load_state_dict(torch.load(weight, map_location=torch.device(args.local_rank)))
-    model.train()
+    model.eval()
 
     ver_list = []
     ver_name_list = []
@@ -421,7 +421,8 @@ if __name__ == '__main__':
             data_set = load_bin(path, image_size)
             ver_list.append(data_set)
             ver_name_list.append(name)
-
+        else:
+            print('path does not exist', path)
     if args.mode == 0:
         for i in range(len(ver_list)):
             results = []

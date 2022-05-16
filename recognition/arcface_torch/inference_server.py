@@ -11,11 +11,15 @@ from backbones import get_model
 
 @torch.no_grad()
 def inference(weight, name, img):
+    device = torch.device("cpu")
     if img is None:
         img = np.random.randint(0, 255, size=(112, 112, 3), dtype=np.uint8)
     else:
         img = cv2.imread(img)
         img = cv2.resize(img, (112, 112))
+
+    start = torch.cuda.Event(enable_timing=True)
+    end = torch.cuda.Event(enable_timing=True)
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = np.transpose(img, (2, 0, 1))
@@ -24,8 +28,16 @@ def inference(weight, name, img):
     net = get_model(name, fp16=False)
     net.load_state_dict(torch.load(weight))
     net.eval()
-    feat = net(img).numpy()
+    net.to(device)
+    img = img.to(device)
+    for _ in range(10):
+        _ = net(img)
+    start.record()
+    feat = net(img).cpu().numpy()
+    end.record()
+    torch.cuda.synchronize()
 
+    print(start.elapsed_time(end))
     return feat
 
 
@@ -35,8 +47,8 @@ if __name__ == "__main__":
     parser.add_argument('--weight', type=str, default='')
 
     args = parser.parse_args()
-    feat1 = inference(args.weight, args.network, 'data/bato_data/persian_celeb_112x112/hayayi/hayayi_306.jpg')
-    feat2 = inference(args.weight, args.network, 'data/bato_data/persian_celeb_112x112/hayayi/hayayi_870.jpg')
+    feat1 = inference(args.weight, args.network, '/app/dataset_112x112/valid/85/85_51.jpg')
+    feat2 = inference(args.weight, args.network, '/app/dataset_112x112/valid/85/85_566.jpg')
     norm_feat1 = feat1[0]/l2norm(feat1[0])
     norm_feat2 = feat2[0]/l2norm(feat2[0])
     print(np.dot(norm_feat1,norm_feat2))

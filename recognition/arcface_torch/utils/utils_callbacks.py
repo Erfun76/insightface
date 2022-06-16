@@ -51,10 +51,10 @@ class CallBackVerification(object):
                 self.ver_list.append(data_set)
                 self.ver_name_list.append(name)
 
-    def __call__(self, num_update, backbone: torch.nn.Module):
+    def __call__(self, num_update, backbone: torch.nn.Module, path_module: str):
         if self.rank is 0 and num_update > 0:
             backbone.eval()
-            self.ver_test(backbone, num_update)
+            self.ver_test(backbone, num_update, path_module)
             backbone.train()
 
 

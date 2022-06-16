@@ -100,6 +100,12 @@ def calculate_roc(thresholds,
         _, _, accuracy[fold_idx] = calculate_accuracy(
             thresholds[best_threshold_index], dist[test_set],
             actual_issame[test_set])
+    
+    # visualize fp
+    _, fp, _ = calculate_accuracy(
+                best_threshold_index, dist[indices],
+                actual_issame[indices])
+    print(fp)
 
     tpr = np.mean(tprs, 0)
     fpr = np.mean(fprs, 0)

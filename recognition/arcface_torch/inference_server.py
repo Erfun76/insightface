@@ -47,8 +47,8 @@ if __name__ == "__main__":
     parser.add_argument('--weight', type=str, default='')
 
     args = parser.parse_args()
-    feat1 = inference(args.weight, args.network, '/app/dataset_112x112/valid/85/85_51.jpg')
-    feat2 = inference(args.weight, args.network, '/app/dataset_112x112/valid/85/85_566.jpg')
+    feat1 = inference(args.weight, args.network, '/home/erfun/Documents/erfan/mohaymen/insightface/recognition/arcface_torch/data/bato_data/persian_celeb_112x112/attila/attila_63.jpg')
+    feat2 = inference(args.weight, args.network, '/home/erfun/Documents/erfan/mohaymen/insightface/recognition/arcface_torch/data/bato_data/persian_celeb_112x112/attila/attila_267.jpg')
     norm_feat1 = feat1[0]/l2norm(feat1[0])
     norm_feat2 = feat2[0]/l2norm(feat2[0])
     print(np.dot(norm_feat1,norm_feat2))

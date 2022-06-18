@@ -70,7 +70,7 @@ def inference(weight, name, img, img2):
 
     car_cam_image = show_cam_on_image(rgb_img, car_grayscale_cam, use_rgb=True)
     car_cam_image = cv2.cvtColor(car_cam_image, cv2.COLOR_RGB2BGR)
-    cv2.imwrite("output.png", car_cam_image)
+    cv2.imwrite("results/grad_cam_output.png", car_cam_image)
     # return feat.numpy()
 
 if __name__ == "__main__":
@@ -80,4 +80,4 @@ if __name__ == "__main__":
     parser.add_argument('--img', type=str, default=None)
     args = parser.parse_args()
 
-    feat1 = inference(args.weight, args.network, './data/bato_data/persian_celeb_112x112/merila/merila_170.jpg', './data/bato_data/persian_celeb_112x112/merila/merila_809.jpg')
+    feat1 = inference(args.weight, args.network, './data/bato_data/persian_celeb_112x112/oveisi/oveisi_135.jpg', './data/bato_data/persian_celeb_112x112/oveisi/oveisi_478.jpg')
